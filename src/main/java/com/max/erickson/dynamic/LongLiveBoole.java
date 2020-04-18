@@ -30,7 +30,16 @@ public final class LongLiveBoole {
     private static final char BOOLEAN_TRUE = 'T';
     private static final char BOOLEAN_FALSE = 'F';
 
-    private static final char[] OPERATORS = {'+', '*', '^'};
+    // conjunction operator
+    private static final char MUL = '*';
+
+    // disjunction
+    private static final char ADD = '+';
+
+    // xor
+    private static final char XOR = '^';
+
+    private static final char[] OPERATORS = {MUL, ADD, XOR};
 
 
     public static boolean canBeTrue(String exp) {
@@ -42,7 +51,74 @@ public final class LongLiveBoole {
         checkArgument(exp != null, "null 'exp' passed");
         checkExpressionValid(exp);
 
-        return false;
+        final int size = exp.length;
+
+        boolean[][] isTrue = new boolean[size][size];
+        boolean[][] isFalse = new boolean[size][size];
+
+        // fill both tables simultaneously from bottom row and up
+        for (int row = size - 1; row >= 0; row -= 2) {
+            for (int col = row; col < size; col += 2) {
+
+                if (row == col) {
+                    isTrue[row][col] = (BOOLEAN_TRUE == exp[row]);
+                    isFalse[row][col] = (BOOLEAN_FALSE == exp[row]);
+                }
+                else {
+
+                    for (int k = row + 1; k < col; k += 2) {
+
+                        assert isValidOperator(exp[k]) : "Not a valid operator";
+
+                        switch (exp[k]) {
+                            case MUL -> updateMul(isTrue, isFalse, row, k, col);
+                            case ADD -> updateAdd(isTrue, isFalse, row, k, col);
+                            case XOR -> updateXor(isTrue, isFalse, row, k, col);
+                        }
+                    }
+                }
+            }
+        }
+
+        return isTrue[0][isTrue.length - 1];
+    }
+
+    private static void updateMul(boolean[][] isTrue, boolean[][] isFalse, int i, int k, int j) {
+        // update table for TRUE
+        if (isTrue[i][k - 1] && isTrue[k + 1][j]) {
+            isTrue[i][j] = true;
+        }
+
+        // update table for FALSE
+        if (isFalse[i][k - 1] || isFalse[k + 1][j]) {
+            isFalse[i][j] = true;
+        }
+    }
+
+    private static void updateAdd(boolean[][] isTrue, boolean[][] isFalse, int i, int k, int j) {
+
+        // update table for TRUE
+        if (isTrue[i][k - 1] || isTrue[k + 1][j]) {
+            isTrue[i][j] = true;
+        }
+
+        // update table for FALSE
+        if (isFalse[i][k - 1] && isFalse[k + 1][j]) {
+            isFalse[i][j] = true;
+        }
+    }
+
+    private static void updateXor(boolean[][] isTrue, boolean[][] isFalse, int i, int k, int j) {
+
+        // update table for TRUE
+        if ((isTrue[i][k - 1] && isFalse[k + 1][j]) || (isFalse[i][k - 1] && isTrue[k + 1][j])) {
+            isTrue[i][j] = true;
+        }
+
+        // update table for FALSE
+        if ((isFalse[i][k - 1] && isFalse[k + 1][j]) || (isTrue[i][k - 1] && isTrue[k + 1][j])) {
+            isFalse[i][j] = true;
+        }
     }
 
     private static void checkExpressionValid(char[] exp) {

@@ -25,7 +25,7 @@ public class LongLiveBooleTest {
 
         assertThatThrownBy(() -> LongLiveBoole.canBeTrue("T*T-F^T")).
                 isInstanceOf(IllegalArgumentException.class).
-                hasMessage("Bad expression, value at index 3 should be a valid operator [+, *, ^], but found '-'");
+                hasMessage("Bad expression, value at index 3 should be a valid operator [*, +, ^], but found '-'");
     }
 
 }
