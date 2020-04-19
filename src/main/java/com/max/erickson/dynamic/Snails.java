@@ -3,9 +3,6 @@ package com.max.erickson.dynamic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -22,70 +19,67 @@ public final class Snails {
         throw new IllegalStateException("Can't instantiate utility only class");
     }
 
-
     /**
      * Dynamic programming solution.
      */
     public static int maxTotalReward(int[][] rewards) {
         checkArgument(rewards != null, "null 'rewards' 2D array passed");
+        checkIsMatrix(rewards);
 
         int snailsCount = rewards.length;
-        int finalState = (1 << snailsCount) - 1;
 
-        Map<Integer, Integer> memoizationTable = new HashMap<>();
+        // rows = count + 1, to mitigate IndexOutOfBoundsException for 'opt[k + 1][col]' call
+        int[][] opt = new int[snailsCount + 1][snailsCount];
 
-        int[] callsWithMemoization = {0};
+        // store best solution, just to check
+        String[][] solution = new String[snailsCount + 1][snailsCount];
 
-        int res = findMaxReward(rewards, memoizationTable, 0, finalState, callsWithMemoization);
+        for (int row = snailsCount - 2; row >= 0; --row) {
 
-        LOG.info("callsWithMemoization: {}", callsWithMemoization[0]);
+            for (int col = row + 1; col < snailsCount; ++col) {
 
-        return res;
-    }
+                // skip current snail
+                int maxReward = opt[row + 1][col];
+                String bestSolution = solution[row + 1][col];
 
-    private static int findMaxReward(int[][] rewards, Map<Integer, Integer> memoizationTable, int state, int finalState,
-                                     int[] callsWithMemoization) {
-        if (state == finalState) {
-            return 0;
-        }
+                // check pairing of current snail with all other snails
+                for (int k = row + 1; k <= col; ++k) {
 
-        if (memoizationTable.containsKey(state)) {
-            callsWithMemoization[0] += 1;
-            return memoizationTable.get(state);
-        }
+                    int possibleReward = rewards[row][k] + opt[row + 1][k - 1] + opt[k + 1][col];
 
-        int i = findZeroIndex(0, state, rewards.length);
+                    if (possibleReward > maxReward) {
+                        maxReward = possibleReward;
+                        bestSolution = (row + " - " + k) +
+                                emptyIfNull(solution[row + 1][k - 1]) + emptyIfNull(solution[k + 1][col]);
+                    }
+                }
 
-        int maxReward = 0;
-
-        for (int j = findZeroIndex(i + 1, state, rewards.length); j != -1; j = findZeroIndex(j + 1, state, rewards.length)) {
-
-            int newState = setBits(state, i, j);
-
-            maxReward = Math.max(maxReward, rewards[i][j] +
-                    findMaxReward(rewards, memoizationTable, newState, finalState, callsWithMemoization));
-        }
-
-        memoizationTable.put(state, maxReward);
-
-        return maxReward;
-    }
-
-    private static int setBits(int state, int i, int j) {
-        return state ^ (1 << i) ^ (1 << j);
-    }
-
-    private static int findZeroIndex(int from, int state, int bitsCount) {
-        int mask = 1;
-        for (int i = from; i < bitsCount; ++i) {
-            if ((mask & state) == 0) {
-                return i;
+                opt[row][col] = maxReward;
+                solution[row][col] = bestSolution;
             }
-
-            mask <<= 1;
         }
 
-        return -1;
+        LOG.info("solution: {}", solution[0][snailsCount - 1]);
+
+        return opt[0][snailsCount - 1];
     }
 
+    private static String emptyIfNull(String other) {
+        return other == null ? "" : ", " + other;
+    }
+
+    private static void checkIsMatrix(int[][] matrix) {
+        int size = matrix.length;
+
+        for (int row = 0; row < matrix.length; ++row) {
+            int[] singleRow = matrix[row];
+            if (singleRow == null || singleRow.length != size) {
+                String errorMsg = String.format("Incorrect matrix passed, the row number '%d' is null or of incorrect size, " +
+                                                        "expected: %d, but found: %s",
+                                                row, size, (singleRow == null ? "null" : singleRow.length));
+
+                throw new IllegalStateException(errorMsg);
+            }
+        }
+    }
 }
