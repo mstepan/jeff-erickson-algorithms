@@ -21,6 +21,11 @@ public final class Snails {
 
     /**
      * Dynamic programming solution.
+     * <p>
+     * N = rewards.length
+     * <p>
+     * time: O(N^3), we need to traverse N^2 solutions table and we spend O(N) for each cell.
+     * space: O(N^2)
      */
     public static int maxTotalReward(int[][] rewards) {
         checkArgument(rewards != null, "null 'rewards' 2D array passed");
