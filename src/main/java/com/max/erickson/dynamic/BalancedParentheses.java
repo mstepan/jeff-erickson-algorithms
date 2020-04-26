@@ -62,33 +62,50 @@ public class BalancedParentheses {
         final char[] arr = str.toCharArray();
 
         final int[][] longest = new int[arr.length][arr.length];
+        final String[][] solution = emptyStrings(arr.length);
 
         for (int i = arr.length - 2; i >= 0; --i) {
             for (int j = i + 1; j < arr.length; ++j) {
 
                 // skip character at 'i'
                 int maxSoFar = longest[i + 1][j];
+                String maxSolution = solution[i + 1][j];
 
                 if (isOpen(arr[i])) {
 
                     // parenthesis at 'i' and 'j' match
                     if (isMatched(arr[i], arr[j])) {
-                        maxSoFar = Math.max(maxSoFar, 1 + longest[i + 1][j - 1]);
+
+                        int possibleSolution = 1 + longest[i + 1][j - 1];
+
+                        if (possibleSolution > maxSoFar) {
+                            maxSoFar = possibleSolution;
+                            maxSolution = String.format("%s%s%s", arr[i], solution[i + 1][j - 1], arr[j]);
+                        }
                     }
 
                     char openCh = arr[i];
 
                     for (int k = i + 1; k < j; ++k) {
                         if (isMatched(openCh, arr[k])) {
-                            maxSoFar = Math.max(maxSoFar, 1 + longest[i + 1][k - 1] + longest[k + 1][j]);
+
+                            int curSol = 1 + longest[i + 1][k - 1] + longest[k + 1][j];
+
+                            if (curSol > maxSoFar) {
+                                maxSoFar = curSol;
+                                maxSolution = String.format("%s%s%s%s", openCh, solution[i + 1][k - 1], arr[k],
+                                                            solution[k + 1][j]);
+                            }
                         }
                     }
                 }
 
                 longest[i][j] = maxSoFar;
+                solution[i][j] = maxSolution;
             }
         }
 
+        LOG.info("Solution: {}", solution[0][arr.length - 1]);
         return 2 * longest[0][arr.length - 1];
     }
 
