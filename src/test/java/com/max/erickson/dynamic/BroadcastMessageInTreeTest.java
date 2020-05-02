@@ -9,8 +9,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class BroadcastMessageInTreeTest {
 
     @Test
-    public void minTripsCountNormalCase() {
-
+    public void minTripsCountNormalCase1() {
         TreeNode<String> a = TreeNode.of("A");
         TreeNode<String> e = TreeNode.of("E");
         TreeNode<String> f = TreeNode.of("F");
@@ -47,6 +46,32 @@ public class BroadcastMessageInTreeTest {
         rootNode.addChildren(a, b, c, d);
 
         assertThat(minTripsCount(rootNode)).isEqualTo(6);
+    }
+
+    @Test
+    public void minTripsCountNormalCase2() {
+        TreeNode<String> b = TreeNode.of("B");
+        TreeNode<String> d = TreeNode.of("D");
+        TreeNode<String> e = TreeNode.of("E");
+        TreeNode<String> f = TreeNode.of("F");
+        TreeNode<String> h = TreeNode.of("H");
+        TreeNode<String> i = TreeNode.of("I");
+        d.addChildren(h, i);
+        b.addChildren(d, e, f);
+
+        TreeNode<String> c = TreeNode.of("C");
+        TreeNode<String> g = TreeNode.of("G");
+        TreeNode<String> j = TreeNode.of("J");
+        TreeNode<String> k = TreeNode.of("K");
+        TreeNode<String> m = TreeNode.of("M");
+        k.addChildren(m);
+        g.addChildren(j, k);
+        c.addChildren(g);
+
+        TreeNode<String> rootNode = TreeNode.of("A");
+        rootNode.addChildren(b, c);
+
+        assertThat(minTripsCount(rootNode)).isEqualTo(5);
     }
 
     @Test
