@@ -6,6 +6,12 @@ import java.util.List;
 
 /**
  * Exercise 11. Paragraph formatting with minimum slop.
+ * <p>
+ * Suppose we want to typeset a paragraph of text onto a piece of paper (or if
+ * you insist, a computer screen). The text consists of a sequence of n words,
+ * where the ith word has length l[i]. We want to break the paragraph into
+ * several lines of total length exactly L. Describe a dynamic programming
+ * algorithm to print the paragraph with minimum slop.
  */
 public class ParagraphFormatting {
 
@@ -15,8 +21,8 @@ public class ParagraphFormatting {
      * time: O(N^2)
      * space: O(N^2)
      *
-     * @param words - all words to be formatted
-     * @param paragraphLength     - maximum allowed paragraph length
+     * @param words           - all words to be formatted
+     * @param paragraphLength - maximum allowed paragraph length
      * @return lines of paragraph with minimum slop.
      */
     public static List<String> optimalFormatting(String[] words, int paragraphLength) {
