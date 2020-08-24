@@ -9,28 +9,35 @@ enum StableMatchingInputGenerator {
 
     INST;
 
-    private static final String[] ALL_DOCTORS = "ABCDEFG".split("");
-    private static final String[] ALL_HOSPITALS = "HIJKLMN".split("");
-
     private static final ThreadLocalRandom RAND = ThreadLocalRandom.current();
 
-    public GeneratedInput generate() {
+    public GeneratedInput generate(int size) {
+
+        String[] allDoctors = new String[size];
+        for (int i = 0; i < allDoctors.length; ++i) {
+            allDoctors[i] = "doctor-" + i;
+        }
+
+        String[] allHospitals = new String[size];
+        for (int i = 0; i < allHospitals.length; ++i) {
+            allHospitals[i] = "hospital-" + i;
+        }
 
         Map<String, String[]> doctorPrefs = new HashMap<>();
 
-        for(String singleDoctor : ALL_DOCTORS ){
-            doctorPrefs.put(singleDoctor, copyAndShuffle(ALL_HOSPITALS));
+        for (String singleDoctor : allDoctors) {
+            doctorPrefs.put(singleDoctor, copyAndShuffle(allHospitals));
         }
 
         Map<String, String[]> hospitalPrefs = new HashMap<>();
-        for(String singleHospital : ALL_HOSPITALS ){
-            hospitalPrefs.put(singleHospital, copyAndShuffle(ALL_DOCTORS));
+        for (String singleHospital : allHospitals) {
+            hospitalPrefs.put(singleHospital, copyAndShuffle(allDoctors));
         }
 
         return new GeneratedInput(doctorPrefs, hospitalPrefs);
     }
 
-    private static String[] copyAndShuffle(String[] arr){
+    private static String[] copyAndShuffle(String[] arr) {
         String[] resArr = Arrays.copyOf(arr, arr.length);
         randomShuffle(resArr);
         return resArr;

@@ -13,10 +13,12 @@ public final class StableMatchingMain {
 
     public static void main(String[] args) throws Exception {
 
+        long totalTime = 0L;
+        final int IT_COUNT = 100;
 
-        for(int it = 0; it < 10_000; ++it) {
+        for (int it = 0; it < IT_COUNT; ++it) {
 
-            StableMatchingInputGenerator.GeneratedInput input = StableMatchingInputGenerator.INST.generate();
+            StableMatchingInputGenerator.GeneratedInput input = StableMatchingInputGenerator.INST.generate(100);
             Map<String, String[]> doctors = input.getDoctorPreferences();
             Map<String, String[]> hospitals = input.getHospitalPreferences();
 
@@ -30,7 +32,11 @@ public final class StableMatchingMain {
 //        hospitals.put("Boston", new String[]{"Yolanda", "Xavier", "Zeus"});
 //        hospitals.put("Chicago", new String[]{"Xavier", "Yolanda", "Zeus"});
 
+            long startTime = System.currentTimeMillis();
             List<DoctorAndHospital> matching = findStableMatching(doctors, hospitals);
+            long endTime = System.currentTimeMillis();
+
+            totalTime += (endTime - startTime);
 
             if (matching.isEmpty()) {
                 System.out.println("No stable matching exists");
@@ -41,10 +47,12 @@ public final class StableMatchingMain {
                 throw new IllegalStateException("Matching not stable");
             }
 
-            for (DoctorAndHospital singleMatch : matching) {
-                System.out.println(singleMatch);
-            }
+//            for (DoctorAndHospital singleMatch : matching) {
+//                System.out.println(singleMatch);
+//            }
         }
+
+        System.out.printf("time: %.2f ms%n", (((double)totalTime) / IT_COUNT));
 
         System.out.printf("StableMatchingMain completed. java version: %s%n", System.getProperty("java.version"));
     }
