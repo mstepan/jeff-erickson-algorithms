@@ -13,29 +13,37 @@ public final class StableMatchingMain {
 
     public static void main(String[] args) throws Exception {
 
-        Map<String, String[]> doctors = new HashMap<>();
-        doctors.put("Xavier", new String[]{"Boston", "Atlanta", "Chicago"});
-        doctors.put("Yolanda", new String[]{"Atlanta", "Boston", "Chicago"});
-        doctors.put("Zeus", new String[]{"Atlanta", "Boston", "Chicago"});
 
-        Map<String, String[]> hospitals = new HashMap<>();
-        hospitals.put("Atlanta", new String[]{"Xavier", "Yolanda", "Zeus"});
-        hospitals.put("Boston", new String[]{"Yolanda", "Xavier", "Zeus"});
-        hospitals.put("Chicago", new String[]{"Xavier", "Yolanda", "Zeus"});
+        for(int it = 0; it < 10_000; ++it) {
 
-        List<DoctorAndHospital> matching = findStableMatching(doctors, hospitals);
+            StableMatchingInputGenerator.GeneratedInput input = StableMatchingInputGenerator.INST.generate();
+            Map<String, String[]> doctors = input.getDoctorPreferences();
+            Map<String, String[]> hospitals = input.getHospitalPreferences();
 
-        if (matching.isEmpty()) {
-            System.out.println("No stable matching exists");
-            return;
-        }
+//        Map<String, String[]> doctors = new HashMap<>();
+//        doctors.put("Xavier", new String[]{"Boston", "Atlanta", "Chicago"});
+//        doctors.put("Yolanda", new String[]{"Atlanta", "Boston", "Chicago"});
+//        doctors.put("Zeus", new String[]{"Atlanta", "Boston", "Chicago"});
+//
+//        Map<String, String[]> hospitals = new HashMap<>();
+//        hospitals.put("Atlanta", new String[]{"Xavier", "Yolanda", "Zeus"});
+//        hospitals.put("Boston", new String[]{"Yolanda", "Xavier", "Zeus"});
+//        hospitals.put("Chicago", new String[]{"Xavier", "Yolanda", "Zeus"});
 
-        if (!isMatchingStable(matching, doctors, hospitals)) {
-            throw new IllegalStateException("Matching not stable");
-        }
+            List<DoctorAndHospital> matching = findStableMatching(doctors, hospitals);
 
-        for (DoctorAndHospital singleMatch : matching) {
-            System.out.println(singleMatch);
+            if (matching.isEmpty()) {
+                System.out.println("No stable matching exists");
+                return;
+            }
+
+            if (!isMatchingStable(matching, doctors, hospitals)) {
+                throw new IllegalStateException("Matching not stable");
+            }
+
+            for (DoctorAndHospital singleMatch : matching) {
+                System.out.println(singleMatch);
+            }
         }
 
         System.out.printf("StableMatchingMain completed. java version: %s%n", System.getProperty("java.version"));
