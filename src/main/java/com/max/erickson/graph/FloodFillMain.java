@@ -9,6 +9,9 @@ import java.util.Queue;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * 5.7 Graph Reductions: Flood Fill.
+ */
 public class FloodFillMain {
 
     public static void main(String[] args) {
