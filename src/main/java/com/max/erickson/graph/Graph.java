@@ -90,6 +90,12 @@ public class Graph {
         return false;
     }
 
+    public void addVertex(String singleVertex) {
+        if (!vertexes.containsKey(singleVertex)) {
+            vertexes.put(singleVertex, new ArrayList<>());
+        }
+    }
+
     private static final class Edge {
         final String dest;
         final int weight;

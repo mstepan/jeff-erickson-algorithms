@@ -12,22 +12,8 @@ import java.util.Optional;
  */
 public class BipartiteGraph {
 
-    public static void main(String[] args) {
-
-        Graph graph1 = new Graph();
-        graph1.addEdge("A", "B");
-        graph1.addEdge("A", "C");
-        graph1.addEdge("B", "C");
-        System.out.println(isBipartite(graph1));
-
-        Graph graph2 = new Graph();
-        graph2.addEdge("A", "B");
-        graph2.addEdge("B", "C");
-        graph2.addEdge("C", "D");
-        graph2.addEdge("A", "D");
-        System.out.println(isBipartite(graph2));
-
-        System.out.println("Bipartite check completed...");
+    private BipartiteGraph() {
+        throw new AssertionError("Can;t instantiate utility only class");
     }
 
     /**
