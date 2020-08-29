@@ -15,7 +15,7 @@ public final class TopologicalOrder {
     }
 
     /**
-     * Exercise 4d. Use topological order.
+     * Exercise 4d. Use topological order (Kahn's algorithm).
      * <p>
      * time: O(V+E)
      * space: O(V)
@@ -24,26 +24,20 @@ public final class TopologicalOrder {
 
         Map<String, Integer> inDegree = calculateInDegree(graph);
 
-        Queue<String> q = new ArrayDeque<>();
-
-        for (String singleVertex : graph.vertexes()) {
-            // all missed from 'inDegree' vertexes has 0 in degree
-            if (!inDegree.containsKey(singleVertex)) {
-                q.add(singleVertex);
-            }
-        }
+        Queue<String> queue = vertexesWithZeroInDegree(inDegree, graph);
 
         List<String> topologicalOrderRes = new ArrayList<>();
-        while (!q.isEmpty()) {
-            String vertex = q.poll();
+        while (!queue.isEmpty()) {
+
+            String vertex = queue.poll();
             topologicalOrderRes.add(vertex);
 
             for (String dest : graph.getAdjacent(vertex)) {
-                int destInDegree = inDegree.compute(dest, (key, value) -> value - 1);
+                int destInDegree = inDegree.compute(dest, (notUsedKey, value) -> value - 1);
 
                 if (destInDegree == 0) {
                     inDegree.remove(dest);
-                    q.add(dest);
+                    queue.add(dest);
                 }
             }
         }
@@ -62,6 +56,20 @@ public final class TopologicalOrder {
         }
 
         return inDegree;
+    }
+
+    private static Queue<String> vertexesWithZeroInDegree(Map<String, Integer> inDegree, Graph graph) {
+        Queue<String> queue = new ArrayDeque<>();
+
+        for (String singleVertex : graph.vertexes()) {
+            // all missed from 'inDegree' vertexes has 0 in degree
+            if (!inDegree.containsKey(singleVertex)) {
+                queue.add(singleVertex);
+            }
+        }
+
+
+        return queue;
     }
 
 }
