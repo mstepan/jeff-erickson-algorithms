@@ -14,7 +14,34 @@ import java.util.stream.Collectors;
  */
 public class Graph {
 
+    private enum Type {
+        UNORDERED,
+        ORDERED
+    }
+
+    private final Type type;
+
     private final Map<String, List<Edge>> vertexes = new HashMap<>();
+
+    public Graph() {
+        this.type = Type.UNORDERED;
+    }
+
+    private Graph(Type type) {
+        this.type = type;
+    }
+
+
+    public static Graph newOrdered() {
+        return new Graph(Type.ORDERED);
+    }
+
+    /**
+     * Get list of all vertexes.
+     */
+    public List<String> vertexes() {
+        return new ArrayList<>(vertexes.keySet());
+    }
 
     /**
      * Returns the total vertexes count in all connected components.
@@ -22,6 +49,7 @@ public class Graph {
     public int vertexesCount() {
         return vertexes.size();
     }
+
 
     /**
      * Returns list of adjacent vertexes.
@@ -54,7 +82,9 @@ public class Graph {
      */
     public boolean addEdge(String src, String dest) {
         if (tryAddEdge(src, dest)) {
-            return tryAddEdge(dest, src);
+            if (type == Type.UNORDERED) {
+                return tryAddEdge(dest, src);
+            }
         }
 
         return false;
@@ -78,8 +108,6 @@ public class Graph {
         vertexes.put(src, edges);
         return true;
     }
-
-//    public List<String>
 
     private static boolean hasEdge(String destEdge, List<Edge> edges) {
         for (Edge singleEdge : edges) {
