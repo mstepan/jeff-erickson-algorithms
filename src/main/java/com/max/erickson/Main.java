@@ -1,24 +1,27 @@
 package com.max.erickson;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.max.erickson.graph.Graph;
+import com.max.erickson.graph.TopologicalSorting;
+
+import java.util.List;
 
 public class Main {
 
 
     public static void main(String[] args) {
 
-        Map<String, Map<String, Integer>> graph = new HashMap<>();
-        Map<String, Integer> aList = new LinkedHashMap<>();
-        aList.put("B", 5);
-        aList.put("D", 7);
+        Graph graph = Graph.newOrdered();
 
-        graph.put("A", aList);
+        graph.addEdge("A", "D");
+        graph.addEdge("A", "C");
+        graph.addEdge("B", "C");
+        graph.addEdge("C", "D");
+        graph.addEdge("C", "E");
+        graph.addEdge("D", "E");
 
-        for (Map.Entry<String, Integer> entry : aList.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
+        List<String> topologicalOrder = TopologicalSorting.topologicalOrder(graph);
+
+        System.out.println(topologicalOrder);
 
         System.out.println("main done... java version: " + System.getProperty("java.version"));
     }

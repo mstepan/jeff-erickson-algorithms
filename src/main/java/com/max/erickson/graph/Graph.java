@@ -43,6 +43,16 @@ public class Graph {
         return new ArrayList<>(vertexes.keySet());
     }
 
+    public List<Edge> edges() {
+        List<Edge> allEdges = new ArrayList<>();
+
+        for (Map.Entry<String, List<Edge>> entry : vertexes.entrySet()) {
+            allEdges.addAll(entry.getValue());
+        }
+
+        return allEdges;
+    }
+
     /**
      * Returns the total vertexes count in all connected components.
      */
@@ -81,6 +91,9 @@ public class Graph {
      * Add src - dest and dest - src edges to an undirected graph.
      */
     public boolean addEdge(String src, String dest) {
+        addVertex(src);
+        addVertex(dest);
+
         if (tryAddEdge(src, dest)) {
             if (type == Type.UNORDERED) {
                 return tryAddEdge(dest, src);
@@ -124,7 +137,11 @@ public class Graph {
         }
     }
 
-    private static final class Edge {
+    public boolean isOrdered() {
+        return type == Type.ORDERED;
+    }
+
+    static final class Edge {
         final String dest;
         final int weight;
 
