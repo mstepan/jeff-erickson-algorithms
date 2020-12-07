@@ -17,11 +17,14 @@ public final class TopologicalSorting {
     }
 
     /**
-     * Classic topological sorting for directed graph.
-     * If graph has cycle, return empty collection as a result.
+     * Classic topological sorting for directed acyclic graph (DAG).
+     * If graph has a cycle this method will throw IllegalStateException.
+     * If graph is unordered or graph reference is NULL, this method will throw IllegalArgumentException.
      * <p>
      * time: O(V+E)
      * space: O(V)
+     * V - vertexes count in a graph
+     * E - edges count in a graph
      */
     public static List<String> topologicalOrder(Graph graph) {
         checkArgument(graph != null, "NULL 'graph' reference detected");
@@ -67,6 +70,4 @@ public final class TopologicalSorting {
                 filter(vertex -> !incomeCntPerVertex.containsKey(vertex)).
                 collect(Collectors.toList());
     }
-
-
 }
