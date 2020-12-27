@@ -2,10 +2,13 @@ package com.max.erickson.graph;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -14,6 +17,19 @@ public final class TopologicalSorting {
 
     private TopologicalSorting() {
         throw new AssertionError("Can't instantiate utility-only class");
+    }
+
+    public static List<String> topologicalOrderUsingDFS(Graph graph) {
+
+        Set<String> visited = new HashSet<>();
+        Set<String> marked = new HashSet<>();
+
+        for(String ver : graph.vertexes()){
+            
+        }
+
+        //TODO:
+        return Collections.emptyList();
     }
 
     /**
