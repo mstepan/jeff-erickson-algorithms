@@ -27,6 +27,22 @@ public class TopologicalSortingTest {
     }
 
     @Test
+    public void topologicalSortUsingDFSThrowsExceptionIfCycle() {
+        Graph graph = Graph.newOrdered();
+
+        graph.addEdge("A", "B");
+        graph.addEdge("A", "C");
+        graph.addEdge("B", "D");
+        graph.addEdge("C", "D");
+        graph.addEdge("D", "E");
+        graph.addEdge("E", "C");
+
+        assertThatThrownBy(() -> TopologicalSorting.topologicalOrderUsingDFS(graph)).
+                isInstanceOf(IllegalStateException.class).
+                hasMessage("Graph has cycle, so can't be sorted in topological order");
+    }
+
+    @Test
     public void disconnectedGraphHasTopologicalOrder() {
         Graph graph = Graph.newOrdered();
 
