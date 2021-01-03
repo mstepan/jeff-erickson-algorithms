@@ -3,6 +3,7 @@ package com.max.erickson.graph;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,16 +21,61 @@ public final class TopologicalSorting {
     }
 
     public static List<String> topologicalOrderUsingDFS(Graph graph) {
+        checkGraphOrdered(graph);
 
         Set<String> visited = new HashSet<>();
         Set<String> marked = new HashSet<>();
 
-        for(String ver : graph.vertexes()){
-            
+        List<String> dfsOrder = new ArrayList<>(graph.vertexesCount());
+
+        for (String ver : graph.vertexes()) {
+            if (!visited.contains(ver)) {
+                dfs(ver, graph, dfsOrder, marked, visited);
+            }
         }
 
-        //TODO:
-        return Collections.emptyList();
+        Collections.reverse(dfsOrder);
+        return dfsOrder;
+    }
+
+    private static void dfs(String vertex, Graph graph, List<String> dfsOrder, Set<String> marked, Set<String> visited) {
+
+        assert !visited.contains(vertex) : "vertex found ins 'visited' set, but should not: " + vertex;
+
+        marked.add(vertex);
+
+        Deque<String> stack = new ArrayDeque<>();
+        stack.push(vertex);
+
+        MAIN:
+        while (!stack.isEmpty()) {
+
+            String cur = stack.peek();
+
+            for (String adjVer : graph.getAdjacent(cur)) {
+                if (marked.contains(adjVer)) {
+                    // cycle detected
+                    throw new IllegalStateException("Graph has cycle, so can't be sorted in topological order");
+                }
+
+                if (!visited.contains(adjVer)) {
+                    // new vertex for DFS found
+                    marked.add(adjVer);
+                    stack.push(adjVer);
+                    continue MAIN;
+                }
+            }
+
+            stack.pop();
+
+            boolean wasRemoved = marked.remove(cur);
+            assert wasRemoved : "vertex wasn't removed from 'marked' set: " + cur;
+
+            boolean wasNew = visited.add(cur);
+            assert wasNew : "vertex was already in visited state: " + cur;
+
+            dfsOrder.add(cur);
+        }
     }
 
     /**
@@ -43,8 +89,7 @@ public final class TopologicalSorting {
      * E - edges count in a graph
      */
     public static List<String> topologicalOrder(Graph graph) {
-        checkArgument(graph != null, "NULL 'graph' reference detected");
-        checkArgument(graph.isOrdered(), "Can't execute topological sorting for UNDIRECTED graph.");
+        checkGraphOrdered(graph);
 
         List<String> allVertices = graph.vertexes();
 
@@ -85,5 +130,10 @@ public final class TopologicalSorting {
         return allVertices.stream().
                 filter(vertex -> !incomeCntPerVertex.containsKey(vertex)).
                 collect(Collectors.toList());
+    }
+
+    private static void checkGraphOrdered(Graph graph) {
+        checkArgument(graph != null, "NULL 'graph' reference detected");
+        checkArgument(graph.isOrdered(), "Can't execute topological sorting for UNDIRECTED graph.");
     }
 }

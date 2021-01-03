@@ -1,6 +1,8 @@
 package com.max.erickson.graph;
 
 /**
+ * Exercise: 13.
+ * <p>
  * The infamous Mongolian puzzle-warrior Vidrach Itky Leda invented the
  * following puzzle in the year 1473. The puzzle consists of an N x N grid
  * of squares, where each square is labeled with a positive integer, and two

@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * 11. A number maze is an NxN grid of positive integers. A token starts in the
+ * Exercise: 11.
+ * <p>
+ * A number maze is an NxN grid of positive integers. A token starts in the
  * upper left corner; your goal is to move the token to the lower-right corner.
  * On each turn, you are allowed to move the token up, down, left, or right;
  * the distance you may move the token is determined by the number on its
